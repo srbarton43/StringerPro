@@ -47,9 +47,3 @@ class Brand:
     
     def getSpecs(self, model):
         return self.table[model]
-
-babolat = Brand("head")
-query = "touch speed"
-print(babolat.getListOfModels(query))
-for model in babolat.getListOfModels(query):
-    print(babolat.getSpecs(model))

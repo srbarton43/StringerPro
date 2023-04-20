@@ -1,9 +1,7 @@
 .git
-*.html
 bin
 lib
 pyvenv.cfg
-babolat_files
 __.*
 .Python
 build/
