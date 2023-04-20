@@ -8,7 +8,10 @@ from fuzzywuzzy import fuzz
 class Brand:
     # creates table with racquet name as key, and list of all values
     allowedBrands = {
-        "babolat":"https://klipperusa.com/pages/babolat-tennis-racquet-patterns"
+        "babolat":"https://klipperusa.com/pages/babolat-tennis-racquet-patterns",
+        "wilson":"https://klipperusa.com/pages/wilson-tennis-racquet-patterns",
+        "head":"https://klipperusa.com/pages/head-tennis-racquet-patterns",
+        "yonex":"https://klipperusa.com/pages/yonex-tennis-racquet-patterns"
         }
 
     def __init__(self, brand):
