@@ -41,15 +41,13 @@ class Brand:
         # some choices
         # TODO
         for model in default:
-            if fuzz.token_set_ratio(query.lower(), model.lower()) > 75:
+            if (
+                fuzz.token_set_ratio(query.lower(), model.lower()) > 75
+                or query.lower() in model.lower()
+            ):
                 new.append(model)
         return new
     
     def getSpecs(self, model):
         return self.table[model]
 
-babolat = Brand("head")
-query = "touch speed"
-print(babolat.getListOfModels(query))
-for model in babolat.getListOfModels(query):
-    print(babolat.getSpecs(model))
