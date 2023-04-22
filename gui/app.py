@@ -27,20 +27,27 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Stringing Info") 
         self.setFixedSize(QSize(650,400))
 
-        self.brand = s.Brand("babolat")
+        # all of the scraping upon open
+        self.dir = s.Directory()
+        self.brand = self.dir.brands[0]
         
         self.label = QLabel("Select Brand:")
         self.label.setAlignment(Qt.AlignmentFlag.AlignRight)
+        self.label.setStyleSheet("padding-top: 10px;"
+                                 "padding-left: 40px;"
+                                 "padding-right: 0px;"
+                                 "padding-bottom: 12px;")
 
         keys = []
-        for key in self.brand.allowedBrands.keys():
-            keys.append(key.capitalize())
+        for key in self.dir.brandsMap.keys():
+            keys.append(key)
         self.dropdown = QComboBox()
         self.dropdown.addItems(keys)
-        self.dropdown.currentTextChanged.connect(self.brandChanged)
+        self.dropdown.currentIndexChanged.connect(self.brandChanged)
 
         self.input = QLineEdit()
         self.input.returnPressed.connect(self.returnPressed)
+        self.input.setPlaceholderText("Input Model Name")
 
         self.models = QListWidget()
         self.models.itemClicked.connect(self.modelClicked)
@@ -74,17 +81,19 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(container)
 
     # drop down picking brand handling
-    def brandChanged(self, b):
-        self.brand = s.Brand(b.lower())
+    def brandChanged(self, i):
+        self.brand = self.dir.brands[i]
         self.stackLayout.setCurrentIndex(0)
         self.models.clear()
         self.models.addItems(self.brand.getListOfModels(""))
     # handling search query
     def returnPressed(self):
         self.models.clear()
-        self.models.addItems(self.brand.getListOfModels(self.input.text()))
+        input = self.input.text()
+        self.models.addItems(self.brand.getListOfModels(input))
         self.stackLayout.setCurrentIndex(0)
         self.input.setText("")
+        self.input.setPlaceholderText(input)
 
     # for selecting model to show specs for
     def modelClicked(self,item):

@@ -5,21 +5,40 @@ import requests
 from bs4 import BeautifulSoup
 from fuzzywuzzy import fuzz
 
+class Directory:
+    dirURL = "https://klipperusa.com/pages/racquet-stringing-patterns"
+    brandsMap = {}
+    brands = []
+    def __init__(self):
+        self.scrapeDir()
+        self.scrapeSubDirs()
+
+    def scrapeDir(self):
+        page = requests.get(self.dirURL)
+        soup = BeautifulSoup(page.content, 'html.parser')
+
+        links = soup.select("table tbody tr td ul li a")
+        url = 'https://klipperusa.com'
+        for link in links:
+            self.brandsMap[link.text] = url+link.get('href')
+
+    def scrapeSubDirs(self):
+        for brand in self.brandsMap:
+            tempBrand = Brand(brand,self.brandsMap)
+            self.brands.append(tempBrand)
+       
+
+
+
 class Brand:
     # creates table with racquet name as key, and list of all values
-    allowedBrands = {
-        "babolat":"https://klipperusa.com/pages/babolat-tennis-racquet-patterns",
-        "wilson":"https://klipperusa.com/pages/wilson-tennis-racquet-patterns",
-        "head":"https://klipperusa.com/pages/head-tennis-racquet-patterns",
-        "yonex":"https://klipperusa.com/pages/yonex-tennis-racquet-patterns"
-        }
-
-    def __init__(self, brand):
+    def __init__(self, brand, brandsMap):
         self.brand = brand
-        self.table = self.createTable(self.brand)
+        self.table = self.createTable(brand,brandsMap)
+        
     
-    def createTable(self, brand):
-        page = requests.get(Brand.allowedBrands[brand])
+    def createTable(self, brand, brandsMap):
+        page = requests.get(brandsMap[brand])
         soup = BeautifulSoup(page.content, 'html.parser') 
 
         tb = {}
@@ -30,16 +49,14 @@ class Brand:
                 td_list[i] = td_list[i].string 
             if len(td_list) != 8: continue
             tb.update({td_list[0]:td_list[1:]})
-        
         return tb
-
+        
     def getListOfModels(self, query):
         default = self.table.keys()
         if not query: return default
         new = []
         # do some algorithm stuff with query to eliminate
         # some choices
-        # TODO
         for model in default:
             if (
                 fuzz.token_set_ratio(query.lower(), model.lower()) > 75
@@ -50,4 +67,3 @@ class Brand:
     
     def getSpecs(self, model):
         return self.table[model]
-
