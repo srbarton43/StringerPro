@@ -15,10 +15,6 @@ from PyQt6.QtWidgets import (
     QTableWidgetItem
 )
 import sys
-from pathlib import Path
-path_root = Path(__file__).parents[1]
-sys.path.append(str(path_root))
-print(sys.path)
 import scraper as s
 
 class MainWindow(QMainWindow):

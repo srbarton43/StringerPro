@@ -26,3 +26,5 @@ MANIFEST
 __pycache__/
 *.py[cod]
 *$py.class
+*.spec
+.DS_Store

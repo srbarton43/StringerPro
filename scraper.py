@@ -20,7 +20,8 @@ class Directory:
         links = soup.select("table tbody tr td ul li a")
         url = 'https://klipperusa.com'
         for link in links:
-            self.brandsMap[link.text] = url+link.get('href')
+            if "tennis" in link.text.lower():
+                self.brandsMap[link.text] = url+link.get('href')
 
     def scrapeSubDirs(self):
         for brandName in self.brandsMap:
