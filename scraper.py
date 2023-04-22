@@ -23,9 +23,9 @@ class Directory:
             self.brandsMap[link.text] = url+link.get('href')
 
     def scrapeSubDirs(self):
-        for brand in self.brandsMap:
-            tempBrand = Brand(brand,self.brandsMap)
-            self.brands.append(tempBrand)
+        for brandName in self.brandsMap:
+            brand = Brand(brandName,self.brandsMap)
+            self.brands.append(brand)
        
 
 
