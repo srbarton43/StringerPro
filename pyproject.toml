@@ -1,0 +1,9 @@
+[tennis_scraper]
+name = "tennis-stringing-scraper"
+version = "0.7.1"
+dependencies = [
+    "requests",
+    "beautifulsoup4",
+    "fuzzywuzzy",
+    "PyQt6"
+]

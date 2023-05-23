@@ -1,3 +1,11 @@
+"""
+GUI App for Running Scraper and Letting User Interact with Results
+Pretty intuitive app design...pick a rackquet brand, and then either search \
+    for a model or scroll and select it from field
+Upon selection, all important racquet specifications will be displayed
+
+Sam Barton 2023
+"""
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtWidgets import (
     QApplication, 
@@ -15,7 +23,7 @@ from PyQt6.QtWidgets import (
     QTableWidgetItem
 )
 import sys
-import scraper as s
+import tennis_scraper.scraper as s
 
 class MainWindow(QMainWindow):
     def __init__(self):
