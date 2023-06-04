@@ -21,7 +21,7 @@ class Directory:
         url = 'https://klipperusa.com'
         for link in links:
             if "tennis" in link.text.lower():
-                self.brandsMap[link.text] = url+link.get('href')
+                self.brandsMap[link.text] = url+str(link.get('href'))
 
     def scrapeSubDirs(self):
         for brandName in self.brandsMap:
