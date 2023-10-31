@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 """
 GUI App for Running Scraper and Letting User Interact with Results
 Pretty intuitive app design...pick a rackquet brand, and then either search \
