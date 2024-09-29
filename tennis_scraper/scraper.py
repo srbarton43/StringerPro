@@ -3,7 +3,7 @@
 
 import requests
 from bs4 import BeautifulSoup
-from fuzzywuzzy import fuzz
+from thefuzz import fuzz
 
 """
 Data structure representing the directory of racquet brands
@@ -71,7 +71,7 @@ class Brand:
         return tb
 
     # Return all models for brand which "match" the query
-    def getListOfModels(self, query):
+    def getListOfModels(self, query: str, verbose: bool):
         default = self.table.keys()
         if not query:
             return default
@@ -79,9 +79,12 @@ class Brand:
         # do some algorithm stuff with query to eliminate
         # some choices
         for model in default:
+            if verbose:
+                print(
+                    f'query: {query}\tmodel: {model}\tratio: {fuzz.partial_token_sort_ratio(query.lower(), model.lower())}')
             if (
-                fuzz.token_set_ratio(query.lower(), model.lower()) > 75
-                or query.lower() in model.lower()
+                fuzz.partial_token_sort_ratio(
+                    query.lower(), model.lower()) > 75
             ):
                 new.append(model)
         return new

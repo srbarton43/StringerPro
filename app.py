@@ -11,6 +11,7 @@ from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtWidgets import (
     QApplication,
     QMainWindow,
+    QPushButton,
     QHBoxLayout,
     QLabel,
     QLineEdit,
@@ -25,6 +26,8 @@ from PyQt6.QtWidgets import (
 )
 import sys
 import tennis_scraper.scraper as s
+
+PLACEHOLDER = "Set Input Text"
 
 
 class MainWindow(QMainWindow):
@@ -53,7 +56,12 @@ class MainWindow(QMainWindow):
 
         self.input = QLineEdit()
         self.input.returnPressed.connect(self.returnPressed)
-        self.input.setPlaceholderText("Input Model Name")
+        self.input.setPlaceholderText(PLACEHOLDER)
+
+        self.searchButton = QPushButton("Search")
+        self.searchButton.clicked.connect(self.searchPressed)
+        self.resetButton = QPushButton("Reset")
+        self.resetButton.clicked.connect(self.resetPressed)
 
         self.models = QListWidget()
         self.models.itemClicked.connect(self.modelClicked)
@@ -66,7 +74,7 @@ class MainWindow(QMainWindow):
             QHeaderView.ResizeMode.ResizeToContents)
         self.specs.verticalHeader().setVisible(False)
 
-        self.models.addItems(self.brand.getListOfModels(""))
+        self.models.addItems(self.brand.getListOfModels("", False))
 
         layout = QVBoxLayout()
         brandLayout = QHBoxLayout()
@@ -74,7 +82,11 @@ class MainWindow(QMainWindow):
         brandLayout.addWidget(self.dropdown)
         layout.addLayout(brandLayout)
 
-        layout.addWidget(self.input)
+        searchLayout = QHBoxLayout()
+        searchLayout.addWidget(self.input)
+        searchLayout.addWidget(self.searchButton)
+        searchLayout.addWidget(self.resetButton)
+        layout.addLayout(searchLayout)
 
         self.stackLayout = QStackedLayout()
         self.stackLayout.addWidget(self.models)
@@ -94,16 +106,36 @@ class MainWindow(QMainWindow):
         self.brand = self.dir.brands[i]
         self.stackLayout.setCurrentIndex(0)
         self.models.clear()
-        self.models.addItems(self.brand.getListOfModels(""))
+        self.models.addItems(self.brand.getListOfModels("", False))
     # handling search query
+
+    def searchPressed(self):
+        self.models.clear()
+        input = self.input.text()
+        self.models.addItems(self.brand.getListOfModels(input, False))
+        self.stackLayout.setCurrentIndex(0)
+        self.input.setText("")
+        if input:
+            self.input.setPlaceholderText(input)
+        else:
+            self.input.setPlaceholderText(PLACEHOLDER)
+
+    def resetPressed(self):
+        self.models.clear()
+        self.models.addItems(self.brand.getListOfModels("", False))
+        self.input.setText("")
+        self.input.setPlaceholderText(PLACEHOLDER)
 
     def returnPressed(self):
         self.models.clear()
         input = self.input.text()
-        self.models.addItems(self.brand.getListOfModels(input))
+        self.models.addItems(self.brand.getListOfModels(input, False))
         self.stackLayout.setCurrentIndex(0)
         self.input.setText("")
-        self.input.setPlaceholderText(input)
+        if input:
+            self.input.setPlaceholderText(input)
+        else:
+            self.input.setPlaceholderText(PLACEHOLDER)
 
     # for selecting model to show specs for
     def modelClicked(self, item):
