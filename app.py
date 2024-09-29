@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 """
 GUI App for Running Scraper and Letting User Interact with Results
 Pretty intuitive app design...pick a rackquet brand, and then either search \
@@ -9,13 +9,13 @@ Sam Barton 2023
 """
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtWidgets import (
-    QApplication, 
-    QMainWindow, 
-    QHBoxLayout, 
-    QLabel, 
-    QLineEdit, 
-    QVBoxLayout, 
-    QWidget, 
+    QApplication,
+    QMainWindow,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QVBoxLayout,
+    QWidget,
     QComboBox,
     QListWidget,
     QStackedLayout,
@@ -26,16 +26,17 @@ from PyQt6.QtWidgets import (
 import sys
 import tennis_scraper.scraper as s
 
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Stringing Info") 
-        self.setFixedSize(QSize(650,400))
+        self.setWindowTitle("Stringing Info")
+        self.setFixedSize(QSize(650, 400))
 
         # all of the scraping upon open
         self.dir = s.Directory()
         self.brand = self.dir.brands[0]
-        
+
         self.label = QLabel("Select Brand:")
         self.label.setAlignment(Qt.AlignmentFlag.AlignRight)
         self.label.setStyleSheet("padding-top: 10px;"
@@ -57,11 +58,14 @@ class MainWindow(QMainWindow):
         self.models = QListWidget()
         self.models.itemClicked.connect(self.modelClicked)
 
-        self.specs = QTableWidget(1,8)
-        self.specs.setHorizontalHeaderLabels(["Model","Tension","Length","Pattern","Skip M Holes","Tie Off M","Start C","Tie Off C"])
-        self.specs.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)      
+        self.specs = QTableWidget(1, 8)
+        self.specs.setHorizontalHeaderLabels(
+            ["Model", "Tension", "Length", "Pattern", "Skip M Holes",
+             "Tie Off M", "Start C", "Tie Off C"])
+        self.specs.horizontalHeader().setSectionResizeMode(
+            QHeaderView.ResizeMode.ResizeToContents)
         self.specs.verticalHeader().setVisible(False)
-        
+
         self.models.addItems(self.brand.getListOfModels(""))
 
         layout = QVBoxLayout()
@@ -69,7 +73,7 @@ class MainWindow(QMainWindow):
         brandLayout.addWidget(self.label)
         brandLayout.addWidget(self.dropdown)
         layout.addLayout(brandLayout)
-        
+
         layout.addWidget(self.input)
 
         self.stackLayout = QStackedLayout()
@@ -77,7 +81,7 @@ class MainWindow(QMainWindow):
         self.stackLayout.addWidget(self.specs)
         layout.addLayout(self.stackLayout)
 
-        layout.setContentsMargins(10,5,10,10)
+        layout.setContentsMargins(10, 5, 10, 10)
         layout.setSpacing(5)
         container = QWidget()
         container.setLayout(layout)
@@ -92,6 +96,7 @@ class MainWindow(QMainWindow):
         self.models.clear()
         self.models.addItems(self.brand.getListOfModels(""))
     # handling search query
+
     def returnPressed(self):
         self.models.clear()
         input = self.input.text()
@@ -101,11 +106,13 @@ class MainWindow(QMainWindow):
         self.input.setPlaceholderText(input)
 
     # for selecting model to show specs for
-    def modelClicked(self,item):
+    def modelClicked(self, item):
         self.stackLayout.setCurrentIndex(1)
-        self.specs.setItem(0,0, QTableWidgetItem(item.text()))
-        for i in range(1,8):
-            self.specs.setItem(0,i,QTableWidgetItem(self.brand.getSpecs(item.text())[i-1]))
+        self.specs.setItem(0, 0, QTableWidgetItem(item.text()))
+        for i in range(1, 8):
+            self.specs.setItem(0, i, QTableWidgetItem(
+                self.brand.getSpecs(item.text())[i-1]))
+
 
 # You need one (and only one) QApplication instance per application.
 # Pass in sys.argv to allow command line arguments for your app.
